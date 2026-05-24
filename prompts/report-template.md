@@ -1,8 +1,8 @@
-# Template De Relatorio HTML De Acessibilidade
+# Template De Relatório HTML De Acessibilidade
 
-Use este arquivo como instrucao para gerar o relatorio final da auditoria. A resposta final do agente deve ser **HTML completo**, pronto para salvar como `.html` e abrir no navegador.
+Use este arquivo como instrução para gerar o relatório final da auditoria. A resposta final do agente deve ser **HTML completo**, pronto para salvar como `.html` e abrir no navegador.
 
-Nao entregue Markdown no relatorio final. Entregue somente:
+Não entregue Markdown no relatório final. Entregue somente:
 
 ```html
 <!doctype html>
@@ -15,33 +15,34 @@ Nao entregue Markdown no relatorio final. Entregue somente:
 
 Classifique todo achado em uma destas categorias:
 
-- `1 - Grave`: bloqueia tarefa principal, impede uso por teclado/leitor de tela, causa falha critica em formulario, modal, navegacao ou estado principal.
-- `2 - Medio`: dificulta o uso, viola WCAG em componente importante, mas ainda existe contorno razoavel.
-- `3 - Leve`: problema localizado, informativo, cosmetico ou de baixa frequencia, ainda acionavel.
+- `1 - Grave`: bloqueia tarefa principal, impede uso por teclado/leitor de tela, causa falha crítica em formulário, modal, navegação ou estado principal.
+- `2 - Médio`: dificulta o uso, viola WCAG em componente importante, mas ainda existe contorno razoável.
+- `3 - Leve`: problema localizado, informativo, cosmético ou de baixa frequência, ainda acionável.
 
 Use cores consistentes:
 
 - Grave: vermelho.
-- Medio: laranja/amarelo.
+- Médio: laranja/amarelo.
 - Leve: azul.
 - Sucesso/sem erro: verde.
 - Neutro/informativo: cinza.
 
-## Campos Obrigatorios Por Erro
+## Campos Obrigatórios Por Erro
 
 Cada erro deve apresentar:
 
-- gravidade (`1 - Grave`, `2 - Medio`, `3 - Leve`)
-- titulo curto
+- gravidade (`1 - Grave`, `2 - Médio`, `3 - Leve`)
+- título curto
 - local ou seletor
-- criterio WCAG relacionado
-- evidencia observada
-- impacto para usuarios
+- critério WCAG relacionado
+- evidência observada
+- impacto para usuários
 - passos para reproduzir
-- recomendacao de correcao em Angular
+- recomendação de correção em Angular
+- bloco `Como corrigir` com snippet Angular, HTML ou CSS quando aplicável
 - fonte da descoberta: `Axe Core`, `Playwright MCP`, `Teste manual`, `Teste customizado`
 
-## Estrutura HTML Obrigatoria
+## Estrutura HTML Obrigatória
 
 Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais.
 
@@ -51,7 +52,7 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Relatorio de Acessibilidade</title>
+    <title>Relatório de Acessibilidade</title>
     <style>
       :root {
         color-scheme: light;
@@ -350,9 +351,9 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
   <body>
     <main class="page">
       <header>
-        <h1>Relatorio de Acessibilidade</h1>
+        <h1>Relatório de Acessibilidade</h1>
         <p class="subtitle">
-          Auditoria de aplicacao Angular com Playwright MCP, Axe Core e validacoes customizadas.
+          Auditoria de aplicação Angular com Playwright MCP, Axe Core e validações customizadas.
         </p>
       </header>
 
@@ -362,7 +363,7 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
           <strong>0</strong>
         </div>
         <div class="metric medio">
-          <span>2 - Medio</span>
+          <span>2 - Médio</span>
           <strong>0</strong>
         </div>
         <div class="metric leve">
@@ -380,8 +381,8 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
         <table>
           <tbody>
             <tr>
-              <th>Aplicacao</th>
-              <td>Nome da aplicacao Angular</td>
+              <th>Aplicação</th>
+              <td>Nome da aplicação Angular</td>
             </tr>
             <tr>
               <th>URL</th>
@@ -393,11 +394,11 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
             </tr>
             <tr>
               <th>Ferramentas</th>
-              <td>Playwright MCP, Axe Core, validacoes customizadas da skill</td>
+              <td>Playwright MCP, Axe Core, validações customizadas da skill</td>
             </tr>
             <tr>
               <th>Telas e estados</th>
-              <td>Tela inicial, formularios, modais, estados com <code>*ngIf</code>, telas sem Router</td>
+              <td>Tela inicial, formulários, modais, estados com <code>*ngIf</code>, telas sem Router</td>
             </tr>
           </tbody>
         </table>
@@ -411,14 +412,14 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
               <th>Status</th>
               <th>Total de falhas</th>
               <th>Axe Core</th>
-              <th>Validacoes customizadas</th>
+              <th>Validações customizadas</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><span class="badge grave">Fail</span></td>
               <td>0</td>
-              <td>0 violacoes</td>
+              <td>0 violações</td>
               <td>0 falhas</td>
             </tr>
           </tbody>
@@ -432,7 +433,7 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
             <div class="finding-header">
               <div class="finding-title">
                 <span class="badge grave">1 - Grave</span>
-                <h3>Titulo curto do erro grave</h3>
+                <h3>Título curto do erro grave</h3>
               </div>
               <code>WCAG 2.1.1 Keyboard</code>
             </div>
@@ -446,24 +447,33 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
                 <p>Axe Core ou Playwright MCP</p>
               </div>
               <div class="detail">
-                <strong>Evidencia</strong>
+                <strong>Evidência</strong>
                 <p>Descreva o comportamento observado.</p>
               </div>
               <div class="detail">
                 <strong>Impacto</strong>
-                <p>Explique como isso afeta usuarios de teclado, baixa visao ou leitor de tela.</p>
+                <p>Explique como isso afeta usuários de teclado, baixa visão ou leitor de tela.</p>
               </div>
               <div class="detail">
                 <strong>Passos para reproduzir</strong>
                 <ol class="steps">
                   <li>Abra a URL auditada.</li>
-                  <li>Navegue ate o componente.</li>
+                  <li>Navegue até o componente.</li>
                   <li>Observe a falha.</li>
                 </ol>
               </div>
               <div class="detail">
-                <strong>Recomendacao Angular</strong>
-                <p>Explique a correcao no template/componente Angular.</p>
+                <strong>Recomendação Angular</strong>
+                <p>Explique a correção no template/componente Angular.</p>
+              </div>
+              <div class="detail">
+                <strong>Como corrigir</strong>
+                <pre><code>&lt;input
+  id="email"
+  formControlName="email"
+  [attr.aria-invalid]="email.invalid &amp;&amp; email.touched ? 'true' : null"
+  [attr.aria-describedby]="email.invalid &amp;&amp; email.touched ? 'email-error' : null"
+/&gt;</code></pre>
               </div>
             </div>
           </article>
@@ -471,7 +481,7 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
       </section>
 
       <section class="section" aria-labelledby="correcoes-title">
-        <h2 id="correcoes-title">Exemplos De Correcao</h2>
+        <h2 id="correcoes-title">Exemplos De Correção</h2>
         <pre><code>&lt;input
   id="email"
   formControlName="email"
@@ -481,17 +491,17 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
       </section>
 
       <section class="section" aria-labelledby="proximos-passos-title">
-        <h2 id="proximos-passos-title">Proximos Passos</h2>
+        <h2 id="proximos-passos-title">Próximos Passos</h2>
         <ol class="steps">
           <li>Corrigir primeiro os erros classificados como <strong>1 - Grave</strong>.</li>
-          <li>Corrigir os erros <strong>2 - Medio</strong>.</li>
+          <li>Corrigir os erros <strong>2 - Médio</strong>.</li>
           <li>Revisar os pontos <strong>3 - Leve</strong>.</li>
           <li>Rodar novamente <code>npm run test:a11y</code>.</li>
-          <li>Repetir a navegacao com Playwright MCP nos estados dinamicos.</li>
+          <li>Repetir a navegação com Playwright MCP nos estados dinâmicos.</li>
         </ol>
       </section>
 
-      <p class="footer">Relatorio gerado pela Angular A11y Skill.</p>
+      <p class="footer">Relatório gerado pela Angular A11y Skill.</p>
     </main>
   </body>
 </html>
@@ -499,15 +509,15 @@ Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais
 
 ## Regras Para O Agente
 
-- Se nao houver erros, use cards zerados e mostre status `Pass` em verde.
-- Se houver erros, ordene por gravidade: `1 - Grave`, depois `2 - Medio`, depois `3 - Leve`.
-- Nao misture severidades antigas como `critical`, `serious`, `moderate` ou `minor` no relatorio final.
+- Se não houver erros, use cards zerados e mostre status `Pass` em verde.
+- Se houver erros, ordene por gravidade: `1 - Grave`, depois `2 - Médio`, depois `3 - Leve`.
+- Não misture severidades antigas como `critical`, `serious`, `moderate` ou `minor` no relatório final.
 - Converta impactos do Axe Core assim:
   - `critical` ou `serious` -> `1 - Grave`
-  - `moderate` -> `2 - Medio`
+  - `moderate` -> `2 - Médio`
   - `minor` -> `3 - Leve`
 - Para falhas customizadas:
-  - keyboard trap, controle inacessivel por teclado, falta de `h1`, modal sem foco ou formulario bloqueado -> `1 - Grave`
-  - contraste insuficiente, ARIA quebrado, erro de formulario sem associacao, heading pulando nivel -> `2 - Medio`
-  - texto pouco claro, sugestao de melhoria, status nao anunciado em fluxo secundario -> `3 - Leve`
-- Escape todo codigo HTML exibido dentro de `<pre><code>`.
+  - keyboard trap, controle inacessível por teclado, falta de `h1`, modal sem foco ou formulário bloqueado -> `1 - Grave`
+  - contraste insuficiente, ARIA quebrado, erro de formulário sem associação, heading pulando nível -> `2 - Médio`
+  - texto pouco claro, sugestão de melhoria, status não anunciado em fluxo secundário -> `3 - Leve`
+- Escape todo código HTML exibido dentro de `<pre><code>`.

@@ -6,6 +6,9 @@
   "type": "module",
   "scripts": {
     "test:a11y": "node scripts/prepare-a11y-report.mjs && playwright test tests/accessibility.spec.ts",
+    "test:a11y:headed": "node scripts/prepare-a11y-report.mjs && playwright test tests/accessibility.spec.ts --headed --project=chromium",
+    "test:a11y:debug": "node scripts/prepare-a11y-report.mjs && playwright test tests/accessibility.spec.ts --debug --project=chromium",
+    "test:a11y:ui": "node scripts/prepare-a11y-report.mjs && playwright test tests/accessibility.spec.ts --ui",
     "playwright:install": "playwright install"
   },
   "keywords": [

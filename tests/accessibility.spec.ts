@@ -30,6 +30,7 @@ type A11yFinding = {
   impact: string;
   steps: string[];
   recommendation: string;
+  fixSnippet?: string;
   source: string;
   state: string;
 };
@@ -60,7 +61,7 @@ function addFinding(finding: A11yFinding): void {
 function severityLabel(severity: Severity): string {
   const labels: Record<Severity, string> = {
     grave: '1 - Grave',
-    medio: '2 - Medio',
+    medio: '2 - Médio',
     leve: '3 - Leve',
   };
 
@@ -86,6 +87,41 @@ function escapeHtml(value: string): string {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function controlNameFromSelector(selector: string): string {
+  return selector.replace(/^#/, '').replace(/[^a-zA-Z0-9_-]/g, '') || 'campo';
+}
+
+function angularFormControlFixSnippet(selector: string, errorId: string): string {
+  const controlName = controlNameFromSelector(selector);
+  const tagName = controlName === 'sexo' ? 'select' : 'input';
+  const typeAttribute =
+    controlName === 'email' ? '\n  type="email"' : controlName === 'sexo' ? '' : '\n  type="text"';
+  const closing =
+    tagName === 'select'
+      ? `\n>\n  <option value="">Selecione</option>\n</select>`
+      : '\n/>';
+
+  return `<${tagName}
+  id="${controlName}"${typeAttribute}
+  formControlName="${controlName}"
+  [attr.aria-invalid]="cadastroForm.get('${controlName}')?.invalid && cadastroForm.get('${controlName}')?.touched ? 'true' : null"
+  [attr.aria-describedby]="cadastroForm.get('${controlName}')?.invalid && cadastroForm.get('${controlName}')?.touched ? '${errorId}' : null"${closing}
+
+@if (cadastroForm.get("${controlName}")?.invalid && cadastroForm.get("${controlName}")?.touched) {
+  <small id="${errorId}" class="error-message">
+    Mensagem de erro do campo.
+  </small>
+}`;
+}
+
+function headingFixSnippet(title = 'Título da tela'): string {
+  return `<main>
+  <section aria-labelledby="titulo-principal">
+    <h1 id="titulo-principal">${title}</h1>
+  </section>
+</main>`;
 }
 
 function safeReportFilename(value: string): string {
@@ -127,6 +163,14 @@ function writeTestRecord(testInfo: TestInfo): void {
 }
 
 function renderFinding(finding: A11yFinding): string {
+  const fixSnippetHtml = finding.fixSnippet
+    ? `
+              <div class="detail detail-wide fix">
+                <strong>Como corrigir</strong>
+                <pre><code>${escapeHtml(finding.fixSnippet)}</code></pre>
+              </div>`
+    : '';
+
   return `
           <article class="finding ${finding.severity}">
             <div class="finding-header">
@@ -150,7 +194,7 @@ function renderFinding(finding: A11yFinding): string {
                 <p>${escapeHtml(finding.source)}</p>
               </div>
               <div class="detail">
-                <strong>Evidencia</strong>
+                <strong>Evidência</strong>
                 <p>${escapeHtml(finding.evidence)}</p>
               </div>
               <div class="detail">
@@ -164,9 +208,10 @@ function renderFinding(finding: A11yFinding): string {
                 </ol>
               </div>
               <div class="detail detail-wide">
-                <strong>Recomendacao Angular</strong>
+                <strong>Recomendação Angular</strong>
                 <p>${escapeHtml(finding.recommendation)}</p>
               </div>
+${fixSnippetHtml}
             </div>
           </article>`;
 }
@@ -203,7 +248,7 @@ function generateHtmlReport(): string {
           <article class="empty-state">
             <span class="badge ok">Pass</span>
             <h3>Nenhum erro encontrado</h3>
-            <p>Os testes automatizados e customizados nao encontraram falhas nesse escopo.</p>
+            <p>Os testes automatizados e customizados não encontraram falhas nesse escopo.</p>
           </article>`;
 
   return `<!doctype html>
@@ -211,7 +256,7 @@ function generateHtmlReport(): string {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Relatorio de Acessibilidade</title>
+    <title>Relatório de Acessibilidade</title>
     <style>
       :root {
         --bg: #f6f8fb;
@@ -286,6 +331,21 @@ function generateHtmlReport(): string {
         background: var(--surface-muted);
         color: var(--text);
         font-size: 0.92em;
+      }
+
+      pre {
+        overflow: auto;
+        margin: 10px 0 0;
+        padding: 14px;
+        border-radius: 8px;
+        background: #111827;
+        color: #e5e7eb;
+      }
+
+      pre code {
+        padding: 0;
+        background: transparent;
+        color: inherit;
       }
 
       .subtitle,
@@ -468,6 +528,11 @@ function generateHtmlReport(): string {
         background: var(--surface-muted);
       }
 
+      .detail.fix {
+        background: #eef6ff;
+        border: 1px solid var(--leve-border);
+      }
+
       .detail-wide {
         grid-column: 1 / -1;
       }
@@ -506,9 +571,9 @@ function generateHtmlReport(): string {
   <body>
     <main class="page">
       <header>
-        <h1>Relatorio de Acessibilidade</h1>
+        <h1>Relatório de Acessibilidade</h1>
         <p class="subtitle">
-          Auditoria de ${escapeHtml(targetUrl)} com Playwright, Axe Core e validacoes customizadas.
+          Auditoria de ${escapeHtml(targetUrl)} com Playwright, Axe Core e validações customizadas.
         </p>
       </header>
 
@@ -518,7 +583,7 @@ function generateHtmlReport(): string {
           <strong>${graveCount}</strong>
         </div>
         <div class="metric medio">
-          <span>2 - Medio</span>
+          <span>2 - Médio</span>
           <strong>${medioCount}</strong>
         </div>
         <div class="metric leve">
@@ -549,7 +614,7 @@ function generateHtmlReport(): string {
             </tr>
             <tr>
               <th>Ferramentas</th>
-              <td>Playwright, Axe Core, validacoes customizadas da Angular A11y Skill</td>
+              <td>Playwright, Axe Core, validações customizadas da Angular A11y Skill</td>
             </tr>
           </tbody>
         </table>
@@ -587,17 +652,17 @@ ${findingsHtml}
       </section>
 
       <section class="section" aria-labelledby="proximos-title">
-        <h2 id="proximos-title">Proximos Passos</h2>
+        <h2 id="proximos-title">Próximos Passos</h2>
         <ol class="steps">
           <li>Corrigir primeiro os erros classificados como <strong>1 - Grave</strong>.</li>
-          <li>Depois corrigir os erros <strong>2 - Medio</strong>.</li>
+          <li>Depois corrigir os erros <strong>2 - Médio</strong>.</li>
           <li>Revisar os pontos <strong>3 - Leve</strong>.</li>
           <li>Rodar novamente <code>npm run test:a11y</code>.</li>
-          <li>Usar Playwright MCP para repetir a navegacao nos estados dinamicos.</li>
+          <li>Usar Playwright MCP para repetir a navegação nos estados dinâmicos.</li>
         </ol>
       </section>
 
-      <p class="footer">Relatorio gerado automaticamente em <code>${escapeHtml(reportPath)}</code>.</p>
+      <p class="footer">Relatório gerado automaticamente em <code>${escapeHtml(reportPath)}</code>.</p>
     </main>
   </body>
 </html>
@@ -626,13 +691,19 @@ async function runAxeScan(page: Page, testInfo: TestInfo, name: string): Promise
     addFinding({
       evidence: `${violation.help}. ${violation.nodes.length} node(s) affected.`,
       impact:
-        'A violacao automatizada pode impedir ou dificultar o uso da interface por tecnologias assistivas.',
+        'A violação automatizada pode impedir ou dificultar o uso da interface por tecnologias assistivas.',
       location:
         violation.nodes
           .flatMap((node) => node.target)
           .slice(0, 5)
           .join(', ') || 'DOM',
       recommendation: `Corrija a regra Axe ${violation.id}. Consulte ${violation.helpUrl}.`,
+      fixSnippet: `// Regra Axe: ${violation.id}
+// Corrija o elemento reportado e rode novamente:
+npm run test:a11y
+
+// Referência:
+${violation.helpUrl}`,
       severity: severityFromAxeImpact(violation.impact),
       source: 'Axe Core',
       state: name,
@@ -793,24 +864,29 @@ async function expectValidHeadingHierarchy(page: Page, stateName: string): Promi
       issue.problem === 'The first visible heading must be h1.';
 
     addFinding({
-      evidence: `${issue.problem} Esperado: ${issue.expected ?? 'heading valido'}. Recebido: ${
-        issue.received ?? 'estrutura invalida'
+      evidence: `${issue.problem} Esperado: ${issue.expected ?? 'heading válido'}. Recebido: ${
+        issue.received ?? 'estrutura inválida'
       }.${issue.text ? ` Texto: ${issue.text}.` : ''}`,
       impact:
-        'Usuarios de leitor de tela dependem de headings para entender a pagina e navegar por secoes.',
+        'Usuários de leitor de tela dependem de headings para entender a página e navegar por seções.',
       location: issue.selector ?? stateName,
       recommendation: firstHeadingIssue
-        ? 'Adicione um h1 visivel e coerente como primeiro heading do estado ou tela.'
-        : 'Reorganize a hierarquia para nao pular niveis, por exemplo h1, h2, h3.',
+        ? 'Adicione um h1 visível e coerente como primeiro heading do estado ou tela.'
+        : 'Reorganize a hierarquia para não pular níveis, por exemplo h1, h2, h3.',
+      fixSnippet: firstHeadingIssue
+        ? headingFixSnippet(issue.text && issue.text !== 'titulo para verificar error' ? issue.text : 'Cadastro de Pessoa')
+        : `<h1>Título principal</h1>
+<h2>Seção principal</h2>
+<h3>Subseção</h3>`,
       severity: firstHeadingIssue ? 'grave' : 'medio',
       source: 'Teste customizado',
       state: issue.state,
-      title: firstHeadingIssue ? 'Tela nao comeca com h1' : 'Hierarquia de headings pula nivel',
+      title: firstHeadingIssue ? 'Tela não começa com h1' : 'Hierarquia de headings pula nível',
       wcag: 'WCAG 2.4.6 Headings and Labels',
       steps: [
         `Abrir ${targetUrl}.`,
         `Acessar o estado ${issue.state}.`,
-        'Inspecionar a ordem dos headings visiveis.',
+        'Inspecionar a ordem dos headings visíveis.',
       ],
     });
   }
@@ -982,12 +1058,24 @@ async function expectVisibleTextContrast(page: Page, stateName: string): Promise
 
   for (const issue of contrastIssues) {
     addFinding({
-      evidence: `Texto "${issue.text}" com contraste ${issue.ratio}:1. Esperado minimo ${issue.expected}:1. Cor ${issue.color} sobre ${issue.backgroundColor}.`,
+      evidence: `Texto "${issue.text}" com contraste ${issue.ratio}:1. Esperado mínimo ${issue.expected}:1. Cor ${issue.color} sobre ${issue.backgroundColor}.`,
       impact:
-        'Usuarios com baixa visao podem nao conseguir ler o texto quando o contraste fica abaixo do minimo WCAG AA.',
+        'Usuários com baixa visão podem não conseguir ler o texto quando o contraste fica abaixo do mínimo WCAG AA.',
       location: issue.selector,
       recommendation:
         'Ajuste os tokens de cor do texto ou do fundo para atingir 4.5:1 em texto normal e 3:1 em texto grande.',
+      fixSnippet: `/* Exemplo: ajuste os tokens usados pelo componente */
+.botao-secundario,
+button {
+  color: #172033;
+  background-color: #ffffff;
+}
+
+.botao-secundario:focus-visible,
+button:focus-visible {
+  outline: 3px solid #175cd3;
+  outline-offset: 2px;
+}`,
       severity: 'medio',
       source: 'Teste customizado',
       state: issue.state,
@@ -996,7 +1084,7 @@ async function expectVisibleTextContrast(page: Page, stateName: string): Promise
         `Acessar o estado ${issue.state}.`,
         `Inspecionar o texto "${issue.text}".`,
       ],
-      title: 'Contraste de texto abaixo do minimo WCAG AA',
+      title: 'Contraste de texto abaixo do mínimo WCAG AA',
       wcag: 'WCAG 1.4.3 Contrast Minimum',
     });
   }
@@ -1102,12 +1190,13 @@ test.describe('Angular accessibility', () => {
 
     for (const reference of missingReferences) {
       addFinding({
-        evidence: `${reference.selector} usa ${reference.attribute} apontando para "${reference.missingId}", mas esse ID nao existe no DOM atual.`,
+        evidence: `${reference.selector} usa ${reference.attribute} apontando para "${reference.missingId}", mas esse ID não existe no DOM atual.`,
         impact:
-          'Tecnologias assistivas podem receber uma relacao quebrada entre controle, descricao, erro ou elemento controlado.',
+          'Tecnologias assistivas podem receber uma relação quebrada entre controle, descrição, erro ou elemento controlado.',
         location: reference.selector,
         recommendation:
           'No template Angular, renderize o elemento referenciado antes de apontar para ele ou use binding condicional em [attr.aria-describedby], [attr.aria-labelledby] e atributos relacionados.',
+        fixSnippet: angularFormControlFixSnippet(reference.selector, reference.missingId),
         severity: 'medio',
         source: 'Teste customizado',
         state: 'initial-screen',
@@ -1116,7 +1205,7 @@ test.describe('Angular accessibility', () => {
           `Inspecionar o elemento ${reference.selector}.`,
           `Verificar se o ID "${reference.missingId}" existe no DOM.`,
         ],
-        title: 'Referencia ARIA ou label aponta para ID inexistente',
+        title: 'Referência ARIA ou label aponta para ID inexistente',
         wcag: 'WCAG 4.1.2 Name, Role, Value',
       });
     }
@@ -1171,21 +1260,23 @@ test.describe('Angular accessibility', () => {
 
     for (const selector of unlabeledControls) {
       addFinding({
-        evidence: `${selector} nao possui label nativo, aria-label, aria-labelledby ou title.`,
+        evidence: `${selector} não possui label nativo, aria-label, aria-labelledby ou title.`,
         impact:
-          'Usuarios de leitor de tela podem nao entender a finalidade do campo de formulario.',
+          'Usuários de leitor de tela podem não entender a finalidade do campo de formulário.',
         location: selector,
         recommendation:
-          'Associe um <label for="id"> ao controle ou use aria-label/aria-labelledby quando nao houver label visual.',
+          'Associe um <label for="id"> ao controle ou use aria-label/aria-labelledby quando não houver label visual.',
+        fixSnippet: `<label for="campo">Nome do campo</label>
+<input id="campo" type="text" formControlName="campo" />`,
         severity: 'grave',
         source: 'Teste customizado',
         state: 'initial-screen',
         steps: [
           `Abrir ${targetUrl}.`,
-          'Inspecionar controles de formulario habilitados.',
-          `Verificar o nome acessivel de ${selector}.`,
+          'Inspecionar controles de formulário habilitados.',
+          `Verificar o nome acessível de ${selector}.`,
         ],
-        title: 'Controle de formulario sem nome acessivel',
+        title: 'Controle de formulário sem nome acessível',
         wcag: 'WCAG 3.3.2 Labels or Instructions',
       });
     }
@@ -1208,6 +1299,11 @@ test.describe('Angular accessibility', () => {
         location: element,
         recommendation:
           'Remova tabindex positivo. Use a ordem natural do DOM ou tabindex="0" apenas quando necessario.',
+        fixSnippet: `<!-- Evite -->
+<button type="button" tabindex="3">Salvar</button>
+
+<!-- Prefira ordem natural do DOM -->
+<button type="button">Salvar</button>`,
         severity: 'leve',
         source: 'Teste customizado',
         state: 'initial-screen',
@@ -1338,21 +1434,34 @@ test.describe('Angular accessibility', () => {
 
     for (const selector of missedSelectors) {
       addFinding({
-        evidence: `${selector} esta habilitado e visivel, mas nao foi alcancado com Tab.`,
+        evidence: `${selector} está habilitado e visível, mas não foi alcançado com Tab.`,
         impact:
-          'Usuarios que dependem de teclado podem nao conseguir acessar ou acionar essa funcionalidade.',
+          'Usuários que dependem de teclado podem não conseguir acessar ou acionar essa funcionalidade.',
         location: selector,
         recommendation:
-          'Garanta que o controle seja naturalmente focavel, nao esteja encoberto e siga a ordem do DOM.',
+          'Garanta que o controle seja naturalmente focável, não esteja encoberto e siga a ordem do DOM.',
+        fixSnippet: `<!-- Prefira controles nativos -->
+<button type="button" (click)="acao()">Ação</button>
+
+<!-- Se for customizado, implemente foco e teclado -->
+<div
+  role="button"
+  tabindex="0"
+  (click)="acao()"
+  (keydown.enter)="acao()"
+  (keydown.space)="acao()"
+>
+  Ação
+</div>`,
         severity: 'grave',
         source: 'Teste customizado',
         state: 'initial-screen',
         steps: [
           `Abrir ${targetUrl}.`,
-          'Pressionar Tab repetidamente a partir do inicio da pagina.',
+          'Pressionar Tab repetidamente a partir do início da página.',
           `Confirmar que ${selector} recebe foco.`,
         ],
-        title: 'Controle habilitado nao e alcancavel por teclado',
+        title: 'Controle habilitado não é alcançável por teclado',
         wcag: 'WCAG 2.1.1 Keyboard',
       });
     }
@@ -1414,21 +1523,29 @@ test.describe('Angular accessibility', () => {
 
     for (const selector of controlsWithoutVisibleFocus) {
       addFinding({
-        evidence: `${selector} recebe foco, mas nao apresenta outline ou box-shadow visivel.`,
+        evidence: `${selector} recebe foco, mas não apresenta outline ou box-shadow visível.`,
         impact:
-          'Usuarios de teclado podem se perder na interface sem indicador visual claro de foco.',
+          'Usuários de teclado podem se perder na interface sem indicador visual claro de foco.',
         location: selector,
         recommendation:
-          'Adicione estado de foco visivel com outline, box-shadow ou borda com contraste suficiente.',
+          'Adicione estado de foco visível com outline, box-shadow ou borda com contraste suficiente.',
+        fixSnippet: `button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #175cd3;
+  outline-offset: 2px;
+}`,
         severity: 'medio',
         source: 'Teste customizado',
         state: 'initial-screen',
         steps: [
           `Abrir ${targetUrl}.`,
           `Navegar ate ${selector} usando Tab.`,
-          'Observar se existe indicador de foco visivel.',
+          'Observar se existe indicador de foco visível.',
         ],
-        title: 'Controle sem foco visivel',
+        title: 'Controle sem foco visível',
         wcag: 'WCAG 2.4.7 Focus Visible',
       });
     }
@@ -1496,19 +1613,20 @@ test.describe('Angular accessibility', () => {
       addFinding({
         evidence: `A mensagem "${error.text}" aparece com id "${error.id}", mas nenhum campo aponta para ela com aria-describedby ou aria-errormessage.`,
         impact:
-          'Usuarios de leitor de tela podem nao perceber que a mensagem de erro pertence ao campo correspondente.',
+          'Usuários de leitor de tela podem não perceber que a mensagem de erro pertence ao campo correspondente.',
         location: `#${error.id}`,
         recommendation:
-          'Adicione [attr.aria-describedby] ou [attr.aria-errormessage] no campo relacionado quando o erro estiver visivel.',
+          'Adicione [attr.aria-describedby] ou [attr.aria-errormessage] no campo relacionado quando o erro estiver visível.',
+        fixSnippet: angularFormControlFixSnippet(`#${error.id.replace(/-error$/, '')}`, error.id),
         severity: 'medio',
         source: 'Teste customizado',
         state: 'validation-errors',
         steps: [
           `Abrir ${targetUrl}.`,
-          'Focar um campo obrigatorio e sair sem preencher.',
-          `Verificar a associacao programatica da mensagem #${error.id}.`,
+          'Focar um campo obrigatório e sair sem preencher.',
+          `Verificar a associação programática da mensagem #${error.id}.`,
         ],
-        title: 'Mensagem de erro visivel sem associacao com o campo',
+        title: 'Mensagem de erro visível sem associação com o campo',
         wcag: 'WCAG 3.3.1 Error Identification',
       });
     }

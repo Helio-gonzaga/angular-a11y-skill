@@ -77,8 +77,26 @@ reports/accessibility-report.html
 Esse relatório agrupa os erros por severidade:
 
 - `1 - Grave`
-- `2 - Medio`
+- `2 - Médio`
 - `3 - Leve`
+
+Para assistir o Playwright abrindo o navegador e testando a tela:
+
+```bash
+npm run test:a11y:headed
+```
+
+Para abrir com Playwright Inspector e avançar passo a passo:
+
+```bash
+npm run test:a11y:debug
+```
+
+Para abrir o modo interativo do Playwright:
+
+```bash
+npm run test:a11y:ui
+```
 
 ## Como Usar Com Playwright MCP
 
@@ -176,7 +194,7 @@ Audite:
 - componentes com *ngIf
 - telas sem Angular Router
 
-Gere um relatório final em HTML seguindo prompts/report-template.md, com severidade `1 - Grave`, `2 - Medio` e `3 - Leve`, evidência, WCAG relacionado, passos de reprodução e sugestão de correção em Angular.
+Gere um relatório final em HTML seguindo prompts/report-template.md, com severidade `1 - Grave`, `2 - Médio` e `3 - Leve`, evidência, WCAG relacionado, passos de reprodução e sugestão de correção em Angular.
 ```
 
 ## Limites Da Automação

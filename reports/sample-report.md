@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Relatorio de Acessibilidade - Exemplo</title>
+    <title>Relatório de Acessibilidade - Exemplo</title>
     <style>
       :root {
         --bg: #f6f8fb;
@@ -295,9 +295,9 @@
   <body>
     <main class="page">
       <header>
-        <h1>Relatorio de Acessibilidade</h1>
+        <h1>Relatório de Acessibilidade</h1>
         <p class="subtitle">
-          Exemplo de saida HTML gerada pela Angular A11y Skill para uma aplicacao Angular local.
+          Exemplo de saída HTML gerada pela Angular A11y Skill para uma aplicação Angular local.
         </p>
       </header>
 
@@ -307,7 +307,7 @@
           <strong>0</strong>
         </div>
         <div class="metric medio">
-          <span>2 - Medio</span>
+          <span>2 - Médio</span>
           <strong>2</strong>
         </div>
         <div class="metric leve">
@@ -325,7 +325,7 @@
         <table>
           <tbody>
             <tr>
-              <th>Aplicacao</th>
+              <th>Aplicação</th>
               <td>Cadastro de Pessoa</td>
             </tr>
             <tr>
@@ -334,11 +334,11 @@
             </tr>
             <tr>
               <th>Ferramentas</th>
-              <td>Playwright, Axe Core, validacoes customizadas da Angular A11y Skill</td>
+              <td>Playwright, Axe Core, validações customizadas da Angular A11y Skill</td>
             </tr>
             <tr>
               <th>Telas e estados</th>
-              <td>Tela inicial, formulario, mensagens de erro e tela de sucesso via controle condicional</td>
+              <td>Tela inicial, formulário, mensagens de erro e tela de sucesso via controle condicional</td>
             </tr>
           </tbody>
         </table>
@@ -352,14 +352,14 @@
               <th>Status</th>
               <th>Total de falhas</th>
               <th>Axe Core</th>
-              <th>Validacoes customizadas</th>
+              <th>validações customizadas</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><span class="badge medio">Fail</span></td>
               <td>2</td>
-              <td>0 violacoes nas tags WCAG configuradas</td>
+              <td>0 violações nas tags WCAG configuradas</td>
               <td>2 falhas encontradas</td>
             </tr>
           </tbody>
@@ -372,8 +372,8 @@
           <article class="finding medio">
             <div class="finding-header">
               <div class="finding-title">
-                <span class="badge medio">2 - Medio</span>
-                <h3>Referencias ARIA apontam para IDs que ainda nao existem</h3>
+                <span class="badge medio">2 - Médio</span>
+                <h3>Referências ARIA apontam para IDs que ainda não existem</h3>
               </div>
               <code>WCAG 4.1.2 Name, Role, Value</code>
             </div>
@@ -387,17 +387,17 @@
                 <p>Teste customizado Playwright</p>
               </div>
               <div class="detail">
-                <strong>Evidencia</strong>
+                <strong>Evidência</strong>
                 <p>
                   Os campos usam <code>aria-describedby</code> apontando para
                   <code>sobrenome-error</code>, <code>email-error</code> e
-                  <code>sexo-error</code>, mas esses elementos ainda nao existem no DOM no estado inicial.
+                  <code>sexo-error</code>, mas esses elementos ainda não existem no DOM no estado inicial.
                 </p>
               </div>
               <div class="detail">
                 <strong>Impacto</strong>
                 <p>
-                  Tecnologias assistivas podem receber uma relacao quebrada ou inconsistente entre campo
+                  Tecnologias assistivas podem receber uma relação quebrada ou inconsistente entre campo
                   e mensagem de ajuda/erro.
                 </p>
               </div>
@@ -405,12 +405,12 @@
                 <strong>Passos para reproduzir</strong>
                 <ol class="steps">
                   <li>Abra <code>http://localhost:4200</code>.</li>
-                  <li>Inspecione os campos do formulario antes de tocar nos inputs.</li>
-                  <li>Observe que os IDs referenciados por <code>aria-describedby</code> nao existem.</li>
+                  <li>Inspecione os campos do formulário antes de tocar nos inputs.</li>
+                  <li>Observe que os IDs referenciados por <code>aria-describedby</code> não existem.</li>
                 </ol>
               </div>
               <div class="detail">
-                <strong>Recomendacao Angular</strong>
+                <strong>Recomendação Angular</strong>
                 <p>
                   Use binding condicional em <code>[attr.aria-describedby]</code> para apontar para o erro
                   somente quando o erro estiver renderizado.
@@ -422,8 +422,8 @@
           <article class="finding medio">
             <div class="finding-header">
               <div class="finding-title">
-                <span class="badge medio">2 - Medio</span>
-                <h3>Mensagem de erro visivel nao esta associada ao campo</h3>
+                <span class="badge medio">2 - Médio</span>
+                <h3>Mensagem de erro visível não está associada ao campo</h3>
               </div>
               <code>WCAG 3.3.1 Error Identification</code>
             </div>
@@ -437,28 +437,28 @@
                 <p>Teste customizado Playwright</p>
               </div>
               <div class="detail">
-                <strong>Evidencia</strong>
+                <strong>Evidência</strong>
                 <p>
-                  A mensagem <code>O nome e obrigatorio.</code> aparece, mas o input
-                  <code>#nome</code> nao usa <code>aria-describedby="nome-error"</code>.
+                  A mensagem <code>O nome é obrigatório.</code> aparece, mas o input
+                  <code>#nome</code> não usa <code>aria-describedby="nome-error"</code>.
                 </p>
               </div>
               <div class="detail">
                 <strong>Impacto</strong>
                 <p>
-                  Usuarios de leitor de tela podem nao perceber que a mensagem de erro pertence ao campo Nome.
+                  Usuários de leitor de tela podem não perceber que a mensagem de erro pertence ao campo Nome.
                 </p>
               </div>
               <div class="detail">
                 <strong>Passos para reproduzir</strong>
                 <ol class="steps">
-                  <li>Abra a pagina.</li>
+                  <li>Abra a página.</li>
                   <li>Foque o campo Nome e saia sem preencher.</li>
-                  <li>Observe a mensagem de erro visivel sem associacao programatica com o input.</li>
+                  <li>Observe a mensagem de erro visível sem associação programática com o input.</li>
                 </ol>
               </div>
               <div class="detail">
-                <strong>Recomendacao Angular</strong>
+                <strong>Recomendação Angular</strong>
                 <p>
                   Adicione <code>[attr.aria-describedby]</code> e <code>[attr.aria-invalid]</code>
                   condicionais ao input Nome.
@@ -470,7 +470,7 @@
       </section>
 
       <section class="section" aria-labelledby="correcao-title">
-        <h2 id="correcao-title">Exemplo De Correcao</h2>
+        <h2 id="correcao-title">Exemplo De Correção</h2>
         <pre><code>&lt;input
   id="nome"
   type="text"
@@ -481,16 +481,16 @@
       </section>
 
       <section class="section" aria-labelledby="proximos-title">
-        <h2 id="proximos-title">Proximos Passos</h2>
+        <h2 id="proximos-title">Próximos Passos</h2>
         <ol class="steps">
           <li>Corrigir os bindings condicionais de <code>aria-describedby</code>.</li>
-          <li>Adicionar <code>aria-invalid</code> quando o campo estiver invalido e o erro estiver visivel.</li>
+          <li>Adicionar <code>aria-invalid</code> quando o campo estiver inválido e o erro estiver visível.</li>
           <li>Rodar novamente <code>npm run test:a11y</code>.</li>
-          <li>Usar Playwright MCP para repetir a navegacao por teclado.</li>
+          <li>Usar Playwright MCP para repetir a navegação por teclado.</li>
         </ol>
       </section>
 
-      <p class="footer">Relatorio gerado pela Angular A11y Skill.</p>
+      <p class="footer">Relatório gerado pela Angular A11y Skill.</p>
     </main>
   </body>
 </html>
