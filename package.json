@@ -1,0 +1,28 @@
+{
+  "name": "angular-a11y-skill",
+  "version": "1.0.0",
+  "description": "AI Skill for Angular accessibility validation with Playwright MCP, Axe Core and agentic Markdown prompts.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test:a11y": "playwright test tests/accessibility.spec.ts",
+    "playwright:install": "playwright install"
+  },
+  "keywords": [
+    "angular",
+    "accessibility",
+    "a11y",
+    "playwright",
+    "axe-core",
+    "mcp",
+    "ai-skill"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1"
+  }
+}
