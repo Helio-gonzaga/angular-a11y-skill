@@ -1,80 +1,513 @@
-# Template De Relatorio De Acessibilidade
+# Template De Relatorio HTML De Acessibilidade
 
-Use este formato para entregar a auditoria final. Substitua as instrucoes pelos dados observados durante a execucao.
+Use este arquivo como instrucao para gerar o relatorio final da auditoria. A resposta final do agente deve ser **HTML completo**, pronto para salvar como `.html` e abrir no navegador.
 
-## Resumo Executivo
+Nao entregue Markdown no relatorio final. Entregue somente:
 
-Descreva em poucas frases o estado geral da acessibilidade, os riscos mais importantes e se a aplicacao pode seguir para correcao incremental ou precisa bloquear release.
+```html
+<!doctype html>
+<html lang="pt-BR">
+...
+</html>
+```
 
-## Escopo
+## Escala De Gravidade
 
-- Aplicacao: nome da aplicacao Angular auditada.
-- URL: URL validada.
-- Data: data da auditoria.
-- Navegador: navegador usado pelo Playwright.
-- Ferramentas: Playwright MCP, Axe Core via `@axe-core/playwright`, prompts desta skill.
-- Telas e estados: liste rotas, telas sem Router, modais, formularios, menus, abas e estados com `*ngIf`.
+Classifique todo achado em uma destas categorias:
 
-## Resultado Automatizado
+- `1 - Grave`: bloqueia tarefa principal, impede uso por teclado/leitor de tela, causa falha critica em formulario, modal, navegacao ou estado principal.
+- `2 - Medio`: dificulta o uso, viola WCAG em componente importante, mas ainda existe contorno razoavel.
+- `3 - Leve`: problema localizado, informativo, cosmetico ou de baixa frequencia, ainda acionavel.
 
-Informe o resultado do Axe Core:
+Use cores consistentes:
 
-| Status | Violacoes | Observacao |
-| --- | ---: | --- |
-| Pass ou Fail | numero total | resumo objetivo |
+- Grave: vermelho.
+- Medio: laranja/amarelo.
+- Leve: azul.
+- Sucesso/sem erro: verde.
+- Neutro/informativo: cinza.
 
-Inclua IDs relevantes do Axe, como `color-contrast`, `label`, `aria-valid-attr-value` ou `button-name`, quando existirem.
+## Campos Obrigatorios Por Erro
 
-## Achados
+Cada erro deve apresentar:
 
-| Severidade | WCAG | Local | Problema | Evidencia | Recomendacao |
-| --- | --- | --- | --- | --- | --- |
-| critical | 2.1.1 Keyboard | Modal de confirmacao | Foco sai do modal aberto | `Tab` alcanca o conteudo ao fundo | Aplicar focus trap, fechar com `Escape` e restaurar foco no botao que abriu |
+- gravidade (`1 - Grave`, `2 - Medio`, `3 - Leve`)
+- titulo curto
+- local ou seletor
+- criterio WCAG relacionado
+- evidencia observada
+- impacto para usuarios
+- passos para reproduzir
+- recomendacao de correcao em Angular
+- fonte da descoberta: `Axe Core`, `Playwright MCP`, `Teste manual`, `Teste customizado`
 
-## Validacao Manual
+## Estrutura HTML Obrigatoria
 
-### Labels E Nomes Acessiveis
+Use esta estrutura como base. Substitua os textos de exemplo pelos achados reais.
 
-Registre campos, botoes icon-only, links e componentes customizados avaliados.
+```html
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Relatorio de Acessibilidade</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f8fb;
+        --surface: #ffffff;
+        --surface-muted: #f1f5f9;
+        --text: #172033;
+        --muted: #5d6b82;
+        --border: #d8e0ea;
+        --grave: #b42318;
+        --grave-bg: #fff1f0;
+        --grave-border: #ffb4ad;
+        --medio: #a15c00;
+        --medio-bg: #fff7e6;
+        --medio-border: #ffd591;
+        --leve: #175cd3;
+        --leve-bg: #eff6ff;
+        --leve-border: #9ec5fe;
+        --ok: #067647;
+        --ok-bg: #ecfdf3;
+        --ok-border: #a6f4c5;
+        --code-bg: #111827;
+        --code-text: #e5e7eb;
+      }
 
-### Heading Hierarchy
+      * {
+        box-sizing: border-box;
+      }
 
-Registre a sequencia de headings observada e indique saltos ou ausencia de `h1`.
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
 
-### ARIA
+      .page {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0 56px;
+      }
 
-Registre atributos invalidos, referencias quebradas, roles incorretos e estados que nao atualizam.
+      header {
+        margin-bottom: 24px;
+      }
 
-### Teclado
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.2;
+      }
 
-Registre ordem de foco, atalhos usados, controles inacessiveis e keyboard traps.
+      h1 {
+        font-size: 2rem;
+      }
 
-### Foco Visivel
+      h2 {
+        margin-bottom: 14px;
+        font-size: 1.35rem;
+      }
 
-Registre controles sem indicador de foco ou com contraste insuficiente.
+      h3 {
+        font-size: 1rem;
+      }
 
-### Contraste
+      p {
+        margin: 0;
+      }
 
-Registre pares de cor problemáticos, contexto visual e impacto.
+      a {
+        color: var(--leve);
+      }
 
-### Angular
+      code {
+        padding: 2px 5px;
+        border-radius: 4px;
+        background: var(--surface-muted);
+        color: var(--text);
+        font-size: 0.92em;
+      }
 
-Registre problemas em Reactive Forms, template-driven forms, `*ngIf`, Angular Material, telas sem Router e componentes customizados.
+      pre {
+        overflow: auto;
+        margin: 12px 0 0;
+        padding: 14px;
+        border-radius: 8px;
+        background: var(--code-bg);
+        color: var(--code-text);
+      }
 
-## Exemplos De Correcao
+      pre code {
+        padding: 0;
+        background: transparent;
+        color: inherit;
+      }
 
-Inclua snippets pequenos apenas quando ajudarem a equipe a corrigir o problema. Prefira exemplos Angular reais com binding de `aria-*`, associacao de `label` e controle de foco.
+      .subtitle {
+        margin-top: 8px;
+        color: var(--muted);
+      }
 
-## Riscos Residuais
+      .section {
+        margin-top: 18px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+      }
 
-Liste pontos que precisam de validacao humana, ambiente com dados reais, leitor de tela especifico ou decisao de produto.
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
 
-## Proximos Passos
+      .metric {
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+      }
 
-Liste a ordem recomendada de correcao:
+      .metric strong {
+        display: block;
+        margin-top: 4px;
+        font-size: 1.7rem;
+        line-height: 1;
+      }
 
-1. Corrigir bloqueios de teclado e foco.
-2. Corrigir labels, nomes acessiveis e ARIA invalido.
-3. Corrigir contraste e estados visuais.
-4. Revisar formularios e mensagens dinamicas.
-5. Rodar novamente Axe Core e uma navegacao manual com Playwright MCP.
+      .metric span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .metric.grave {
+        border-color: var(--grave-border);
+        background: var(--grave-bg);
+        color: var(--grave);
+      }
+
+      .metric.medio {
+        border-color: var(--medio-border);
+        background: var(--medio-bg);
+        color: var(--medio);
+      }
+
+      .metric.leve {
+        border-color: var(--leve-border);
+        background: var(--leve-bg);
+        color: var(--leve);
+      }
+
+      .metric.ok {
+        border-color: var(--ok-border);
+        background: var(--ok-bg);
+        color: var(--ok);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 700;
+        font-size: 0.82rem;
+      }
+
+      .badge.grave {
+        border-color: var(--grave-border);
+        background: var(--grave-bg);
+        color: var(--grave);
+      }
+
+      .badge.medio {
+        border-color: var(--medio-border);
+        background: var(--medio-bg);
+        color: var(--medio);
+      }
+
+      .badge.leve {
+        border-color: var(--leve-border);
+        background: var(--leve-bg);
+        color: var(--leve);
+      }
+
+      .badge.ok {
+        border-color: var(--ok-border);
+        background: var(--ok-bg);
+        color: var(--ok);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: var(--surface-muted);
+        color: var(--text);
+        font-size: 0.86rem;
+      }
+
+      .findings {
+        display: grid;
+        gap: 14px;
+      }
+
+      .finding {
+        border: 1px solid var(--border);
+        border-left-width: 8px;
+        border-radius: 8px;
+        background: var(--surface);
+        overflow: hidden;
+      }
+
+      .finding.grave {
+        border-left-color: var(--grave);
+      }
+
+      .finding.medio {
+        border-left-color: var(--medio);
+      }
+
+      .finding.leve {
+        border-left-color: var(--leve);
+      }
+
+      .finding-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 16px 0;
+      }
+
+      .finding-title {
+        display: grid;
+        gap: 8px;
+      }
+
+      .finding-body {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        padding: 16px;
+      }
+
+      .detail {
+        padding: 12px;
+        border-radius: 8px;
+        background: var(--surface-muted);
+      }
+
+      .detail strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .steps {
+        margin: 6px 0 0;
+        padding-left: 20px;
+      }
+
+      .footer {
+        margin-top: 22px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 820px) {
+        .summary-grid,
+        .finding-body {
+          grid-template-columns: 1fr;
+        }
+
+        .finding-header {
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Relatorio de Acessibilidade</h1>
+        <p class="subtitle">
+          Auditoria de aplicacao Angular com Playwright MCP, Axe Core e validacoes customizadas.
+        </p>
+      </header>
+
+      <section class="summary-grid" aria-label="Resumo de erros">
+        <div class="metric grave">
+          <span>1 - Grave</span>
+          <strong>0</strong>
+        </div>
+        <div class="metric medio">
+          <span>2 - Medio</span>
+          <strong>0</strong>
+        </div>
+        <div class="metric leve">
+          <span>3 - Leve</span>
+          <strong>0</strong>
+        </div>
+        <div class="metric ok">
+          <span>Testes executados</span>
+          <strong>0</strong>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="escopo-title">
+        <h2 id="escopo-title">Escopo</h2>
+        <table>
+          <tbody>
+            <tr>
+              <th>Aplicacao</th>
+              <td>Nome da aplicacao Angular</td>
+            </tr>
+            <tr>
+              <th>URL</th>
+              <td><code>http://localhost:4200</code></td>
+            </tr>
+            <tr>
+              <th>Data</th>
+              <td>AAAA-MM-DD</td>
+            </tr>
+            <tr>
+              <th>Ferramentas</th>
+              <td>Playwright MCP, Axe Core, validacoes customizadas da skill</td>
+            </tr>
+            <tr>
+              <th>Telas e estados</th>
+              <td>Tela inicial, formularios, modais, estados com <code>*ngIf</code>, telas sem Router</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" aria-labelledby="resultado-title">
+        <h2 id="resultado-title">Resultado Automatizado</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Total de falhas</th>
+              <th>Axe Core</th>
+              <th>Validacoes customizadas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge grave">Fail</span></td>
+              <td>0</td>
+              <td>0 violacoes</td>
+              <td>0 falhas</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" aria-labelledby="achados-title">
+        <h2 id="achados-title">Erros Encontrados</h2>
+        <div class="findings">
+          <article class="finding grave">
+            <div class="finding-header">
+              <div class="finding-title">
+                <span class="badge grave">1 - Grave</span>
+                <h3>Titulo curto do erro grave</h3>
+              </div>
+              <code>WCAG 2.1.1 Keyboard</code>
+            </div>
+            <div class="finding-body">
+              <div class="detail">
+                <strong>Local</strong>
+                <p><code>#seletor</code></p>
+              </div>
+              <div class="detail">
+                <strong>Fonte</strong>
+                <p>Axe Core ou Playwright MCP</p>
+              </div>
+              <div class="detail">
+                <strong>Evidencia</strong>
+                <p>Descreva o comportamento observado.</p>
+              </div>
+              <div class="detail">
+                <strong>Impacto</strong>
+                <p>Explique como isso afeta usuarios de teclado, baixa visao ou leitor de tela.</p>
+              </div>
+              <div class="detail">
+                <strong>Passos para reproduzir</strong>
+                <ol class="steps">
+                  <li>Abra a URL auditada.</li>
+                  <li>Navegue ate o componente.</li>
+                  <li>Observe a falha.</li>
+                </ol>
+              </div>
+              <div class="detail">
+                <strong>Recomendacao Angular</strong>
+                <p>Explique a correcao no template/componente Angular.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="correcoes-title">
+        <h2 id="correcoes-title">Exemplos De Correcao</h2>
+        <pre><code>&lt;input
+  id="email"
+  formControlName="email"
+  [attr.aria-invalid]="email.invalid &amp;&amp; email.touched ? 'true' : null"
+  [attr.aria-describedby]="email.invalid &amp;&amp; email.touched ? 'email-error' : null"
+/&gt;</code></pre>
+      </section>
+
+      <section class="section" aria-labelledby="proximos-passos-title">
+        <h2 id="proximos-passos-title">Proximos Passos</h2>
+        <ol class="steps">
+          <li>Corrigir primeiro os erros classificados como <strong>1 - Grave</strong>.</li>
+          <li>Corrigir os erros <strong>2 - Medio</strong>.</li>
+          <li>Revisar os pontos <strong>3 - Leve</strong>.</li>
+          <li>Rodar novamente <code>npm run test:a11y</code>.</li>
+          <li>Repetir a navegacao com Playwright MCP nos estados dinamicos.</li>
+        </ol>
+      </section>
+
+      <p class="footer">Relatorio gerado pela Angular A11y Skill.</p>
+    </main>
+  </body>
+</html>
+```
+
+## Regras Para O Agente
+
+- Se nao houver erros, use cards zerados e mostre status `Pass` em verde.
+- Se houver erros, ordene por gravidade: `1 - Grave`, depois `2 - Medio`, depois `3 - Leve`.
+- Nao misture severidades antigas como `critical`, `serious`, `moderate` ou `minor` no relatorio final.
+- Converta impactos do Axe Core assim:
+  - `critical` ou `serious` -> `1 - Grave`
+  - `moderate` -> `2 - Medio`
+  - `minor` -> `3 - Leve`
+- Para falhas customizadas:
+  - keyboard trap, controle inacessivel por teclado, falta de `h1`, modal sem foco ou formulario bloqueado -> `1 - Grave`
+  - contraste insuficiente, ARIA quebrado, erro de formulario sem associacao, heading pulando nivel -> `2 - Medio`
+  - texto pouco claro, sugestao de melhoria, status nao anunciado em fluxo secundario -> `3 - Leve`
+- Escape todo codigo HTML exibido dentro de `<pre><code>`.

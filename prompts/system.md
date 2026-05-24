@@ -54,7 +54,8 @@ Use os arquivos em `examples/` quando precisar de exemplos de correcao para form
 
 6. Gere o relatorio:
    - Use `prompts/report-template.md`.
-   - Classifique severidade como `critical`, `serious`, `moderate` ou `minor`.
+   - Entregue HTML completo, pronto para abrir no navegador.
+   - Classifique severidade como `1 - Grave`, `2 - Medio` ou `3 - Leve`.
    - Separe achados automatizados de achados manuais.
    - Inclua passos de reproducao e sugestao de correcao.
 
@@ -70,7 +71,7 @@ Use os arquivos em `examples/` quando precisar de exemplos de correcao para form
 
 ## Saida Esperada
 
-O resultado final deve ser um relatorio Markdown com:
+O resultado final deve ser um relatorio HTML com:
 
 - escopo testado
 - ferramentas usadas

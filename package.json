@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "test:a11y": "playwright test tests/accessibility.spec.ts",
+    "test:a11y": "node scripts/prepare-a11y-report.mjs && playwright test tests/accessibility.spec.ts",
     "playwright:install": "playwright install"
   },
   "keywords": [

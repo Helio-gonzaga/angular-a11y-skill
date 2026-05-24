@@ -68,6 +68,18 @@ npm run playwright:install
 npm run test:a11y
 ```
 
+O comando gera automaticamente um relatório HTML em:
+
+```txt
+reports/accessibility-report.html
+```
+
+Esse relatório agrupa os erros por severidade:
+
+- `1 - Grave`
+- `2 - Medio`
+- `3 - Leve`
+
 ## Como Usar Com Playwright MCP
 
 Use Playwright MCP quando o agente precisar observar estados reais da interface, abrir menus, preencher formulários, acionar modais, testar foco e registrar evidências visuais ou estruturais.
@@ -80,7 +92,7 @@ Fluxo recomendado:
 4. Navegar pela aplicação com Playwright MCP.
 5. Executar o teste `npm run test:a11y` para coletar violações automatizadas do Axe Core.
 6. Complementar com validação manual assistida por MCP: teclado, foco, estados com `*ngIf`, modais, mensagens de erro e contraste.
-7. Gerar relatório usando `prompts/report-template.md`.
+7. Gerar relatório HTML usando `prompts/report-template.md`.
 
 O agente deve registrar evidências como seletor, texto visível, caminho de teclado, estado da tela e recomendação de correção Angular.
 
@@ -133,7 +145,7 @@ Axe Core via Playwright
    |
    | detecta violações automatizadas WCAG
    v
-Relatório Markdown
+Relatório HTML
 ```
 
 ## Exemplo De Prompt Para O Agente
@@ -164,7 +176,7 @@ Audite:
 - componentes com *ngIf
 - telas sem Angular Router
 
-Gere um relatório final em Markdown seguindo prompts/report-template.md, com severidade, evidência, WCAG relacionado, passos de reprodução e sugestão de correção em Angular.
+Gere um relatório final em HTML seguindo prompts/report-template.md, com severidade `1 - Grave`, `2 - Medio` e `3 - Leve`, evidência, WCAG relacionado, passos de reprodução e sugestão de correção em Angular.
 ```
 
 ## Limites Da Automação

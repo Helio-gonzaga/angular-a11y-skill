@@ -46,12 +46,11 @@ Use este checklist para classificar achados. Registre `Pass`, `Fail`, `Needs rev
 - `4.1.2 Name, Role, Value`: componentes customizados expoem nome, role, valor e estado.
 - `4.1.3 Status Messages`: mensagens de status sao anunciadas sem mover foco quando apropriado.
 
-## Mapeamento De Severidade
+## Mapeamento De Severidade 
 
-- `critical`: bloqueia uma tarefa principal ou impede uso por teclado/leitor de tela.
-- `serious`: causa falha WCAG clara em componente importante ou fluxo frequente.
-- `moderate`: dificulta uso, mas ha contorno razoavel.
-- `minor`: problema localizado, cosmetico ou de baixa frequencia, ainda acionavel.
+- `1 - Grave`: bloqueia uma tarefa principal ou impede uso por teclado/leitor de tela.
+- `2 - Medio`: dificulta uso, causa falha WCAG em componente importante ou afeta fluxo frequente, mas ha contorno razoavel.
+- `3 - Leve`: problema localizado, informativo, cosmetico ou de baixa frequencia, ainda acionavel.
 
 ## Evidencia Minima Por Achado
 
