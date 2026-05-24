@@ -1,5 +1,9 @@
 # Angular A11y Skill
 
+<p align="center">
+  <img src="./images/report.png" alt="Angular A11y Skill Banner" width="100%" />
+</p>
+
 Repositório de AI Skill para validação de acessibilidade em aplicações Angular usando Playwright MCP, Axe Core, prompts em Markdown e fluxo agentic.
 
 Esta skill não cria uma aplicação Angular. Ela entrega contexto, prompts, exemplos e um teste Playwright reutilizável para que um agente de IA consiga inspecionar uma aplicação Angular existente, navegar pelos estados da interface e gerar um relatório de acessibilidade com evidências.
