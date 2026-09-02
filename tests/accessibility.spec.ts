@@ -1660,3 +1660,67 @@ textarea:focus-visible {
     await runAxeScan(page, testInfo, 'success-screen');
   });
 });
+
+Crie dentro deste workspace um novo projeto chamado `ui-architecture-agent`.
+
+Esse projeto será um agente reutilizável responsável por auxiliar na implementação de telas frontend a partir de referências visuais, como screenshots ou telas do Figma.
+
+O agente deverá ser independente dos projetos frontend existentes no workspace. Ele poderá futuramente atuar sobre diferentes projetos, como Boletos, Sispag e Pix Automático, recebendo um projeto alvo como contexto.
+
+Neste primeiro momento, NÃO implemente ainda a geração completa de telas. Quero apenas criar a estrutura inicial do agente de forma organizada e extensível.
+
+A arquitetura deve considerar que futuramente o agente será responsável por:
+
+1. Receber uma imagem/screenshot ou referência de uma tela do Figma.
+2. Identificar se a referência representa uma página completa ou um componente isolado.
+3. Analisar o projeto frontend alvo antes de gerar código.
+4. Identificar arquitetura, estrutura de diretórios, convenções e componentes já existentes.
+5. Decompor uma página em componentes menores.
+6. Identificar quais componentes existentes podem ser reutilizados.
+7. Classificar novos componentes entre componentes locais da feature/página e componentes compartilhados.
+8. Gerar um arquivo Markdown descrevendo a decomposição da tela e as decisões arquiteturais.
+9. Gerar posteriormente os arquivos necessários da página e dos componentes.
+10. Validar se a implementação gerada segue os padrões do projeto alvo.
+
+Estruture o projeto pensando em um agente principal/orquestrador e capacidades menores e especializadas, que poderão evoluir como skills.
+
+Algumas capacidades previstas são:
+
+* analyze-repository
+* analyze-screen
+* detect-components
+* reconcile-components
+* classify-components
+* generate-component-spec
+* generate-page
+* generate-component
+* generate-tests
+* validate-implementation
+
+Importante:
+
+* Não assuma uma estrutura fixa para os projetos frontend.
+* Não assuma que todo projeto utiliza a mesma versão ou arquitetura do Angular.
+* O agente deverá futuramente descobrir essas informações analisando o projeto alvo.
+* Não considere automaticamente um componente visual como shared.
+* Antes de criar um componente, deverá existir uma etapa de busca/reconciliação com componentes já existentes.
+* Componentes específicos de uma página/feature devem permanecer próximos dela.
+* Componentes compartilhados devem ser criados como shared somente quando houver justificativa arquitetural para isso.
+* Componentes do Design System devem ser reutilizados em vez de recriados.
+* Mantenha as responsabilidades das skills bem separadas.
+* Evite criar um agente monolítico baseado em um único prompt gigante.
+
+Crie inicialmente:
+
+* estrutura de diretórios do agente;
+* README.md explicando propósito e arquitetura;
+* documentação da responsabilidade do agente principal;
+* estrutura inicial para as skills;
+* documentação do fluxo planejado;
+* exemplos de como futuramente informar um projeto alvo;
+* um exemplo do formato esperado do `component-map.md`.
+
+Não implemente integrações externas ou lógica complexa ainda.
+
+Ao finalizar, me apresente a estrutura criada e explique brevemente a responsabilidade de cada parte antes de avançarmos para a implementação das skills.
+
