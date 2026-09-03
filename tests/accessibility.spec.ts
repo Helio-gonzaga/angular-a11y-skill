@@ -1661,66 +1661,126 @@ textarea:focus-visible {
   });
 });
 
-Crie dentro deste workspace um novo projeto chamado `ui-architecture-agent`.
+Agora vamos implementar a primeira capacidade do `ui-architecture-agent`: análise do projeto frontend alvo.
 
-Esse projeto será um agente reutilizável responsável por auxiliar na implementação de telas frontend a partir de referências visuais, como screenshots ou telas do Figma.
+Quero que o agente consiga receber/identificar um projeto alvo dentro do workspace, por exemplo:
 
-O agente deverá ser independente dos projetos frontend existentes no workspace. Ele poderá futuramente atuar sobre diferentes projetos, como Boletos, Sispag e Pix Automático, recebendo um projeto alvo como contexto.
+* boletos
+* sispag
+* pix-automatico
 
-Neste primeiro momento, NÃO implemente ainda a geração completa de telas. Quero apenas criar a estrutura inicial do agente de forma organizada e extensível.
+Neste momento, NÃO implemente ainda análise de screenshot/Figma nem geração de componentes.
 
-A arquitetura deve considerar que futuramente o agente será responsável por:
+Implemente a capacidade `analyze-repository`.
 
-1. Receber uma imagem/screenshot ou referência de uma tela do Figma.
-2. Identificar se a referência representa uma página completa ou um componente isolado.
-3. Analisar o projeto frontend alvo antes de gerar código.
-4. Identificar arquitetura, estrutura de diretórios, convenções e componentes já existentes.
-5. Decompor uma página em componentes menores.
-6. Identificar quais componentes existentes podem ser reutilizados.
-7. Classificar novos componentes entre componentes locais da feature/página e componentes compartilhados.
-8. Gerar um arquivo Markdown descrevendo a decomposição da tela e as decisões arquiteturais.
-9. Gerar posteriormente os arquivos necessários da página e dos componentes.
-10. Validar se a implementação gerada segue os padrões do projeto alvo.
+O objetivo é fazer com que, antes de qualquer geração de código, o agente analise o projeto alvo e produza um contexto estruturado sobre ele.
 
-Estruture o projeto pensando em um agente principal/orquestrador e capacidades menores e especializadas, que poderão evoluir como skills.
+A análise deve identificar, quando aplicável:
 
-Algumas capacidades previstas são:
+* nome e caminho do projeto alvo;
+* framework utilizado;
+* versão do framework;
+* versão do TypeScript;
+* estrutura principal de diretórios;
+* organização por features/domains/pages;
+* localização de shared components;
+* localização de componentes comuns;
+* Design System utilizado;
+* bibliotecas de UI existentes;
+* aliases configurados;
+* padrão de nomenclatura de arquivos e componentes;
+* utilização de standalone components ou modules;
+* estratégia de testes e framework utilizado;
+* localização e padrão dos arquivos de teste;
+* estratégia de estilos (SCSS, CSS etc.);
+* state management, caso exista;
+* estrutura de rotas;
+* convenções locais documentadas em arquivos como AGENTS.md, README ou documentação equivalente;
+* componentes existentes que futuramente poderão ser considerados para reutilização.
 
-* analyze-repository
-* analyze-screen
-* detect-components
-* reconcile-components
-* classify-components
-* generate-component-spec
-* generate-page
-* generate-component
-* generate-tests
-* validate-implementation
+IMPORTANTE:
 
-Importante:
+Não quero que o agente assuma que todos os projetos possuem a mesma arquitetura.
 
-* Não assuma uma estrutura fixa para os projetos frontend.
-* Não assuma que todo projeto utiliza a mesma versão ou arquitetura do Angular.
-* O agente deverá futuramente descobrir essas informações analisando o projeto alvo.
-* Não considere automaticamente um componente visual como shared.
-* Antes de criar um componente, deverá existir uma etapa de busca/reconciliação com componentes já existentes.
-* Componentes específicos de uma página/feature devem permanecer próximos dela.
-* Componentes compartilhados devem ser criados como shared somente quando houver justificativa arquitetural para isso.
-* Componentes do Design System devem ser reutilizados em vez de recriados.
-* Mantenha as responsabilidades das skills bem separadas.
-* Evite criar um agente monolítico baseado em um único prompt gigante.
+Ele deve descobrir os padrões a partir do projeto analisado.
 
-Crie inicialmente:
+Por exemplo, não assuma previamente que shared components ficam em:
 
-* estrutura de diretórios do agente;
-* README.md explicando propósito e arquitetura;
-* documentação da responsabilidade do agente principal;
-* estrutura inicial para as skills;
-* documentação do fluxo planejado;
-* exemplos de como futuramente informar um projeto alvo;
-* um exemplo do formato esperado do `component-map.md`.
+`src/app/shared/components`
 
-Não implemente integrações externas ou lógica complexa ainda.
+Essa localização deve ser descoberta.
 
-Ao finalizar, me apresente a estrutura criada e explique brevemente a responsabilidade de cada parte antes de avançarmos para a implementação das skills.
+Também não quero que essa análise dependa somente de nomes de diretórios. Sempre que possível, utilize arquivos de configuração, imports e código existente como evidência.
+
+### Resultado da análise
+
+Defina um contrato estruturado para representar o contexto descoberto.
+
+Pode ser algo conceitualmente parecido com:
+
+ProjectContext
+
+* projectName
+* projectPath
+* framework
+* frameworkVersion
+* typescriptVersion
+* architecture
+* componentStrategy
+* sharedComponentsPaths
+* featurePaths
+* designSystem
+* uiLibraries
+* testing
+* styling
+* routing
+* stateManagement
+* aliases
+* conventions
+* reusableComponents
+
+Não precisa seguir exatamente essa estrutura caso exista uma modelagem melhor. Quero que você proponha a melhor estrutura antes de consolidá-la.
+
+Além dos dados encontrados, quero que seja possível diferenciar:
+
+* informação confirmada;
+* informação inferida;
+* informação que não foi possível determinar.
+
+Não invente uma convenção quando não houver evidência suficiente.
+
+### Segurança
+
+O `analyze-repository` deve ser somente leitura.
+
+Ele NÃO pode alterar arquivos do projeto alvo durante a análise.
+
+### Testes
+
+Crie testes para essa capacidade utilizando fixtures/projetos de exemplo com estruturas diferentes, garantindo que o analisador não dependa de uma única organização de projeto.
+
+Por exemplo:
+
+Projeto A:
+Angular + standalone + Jest + organização por features.
+
+Projeto B:
+Angular + NgModules + outra estrutura de diretórios.
+
+### Ao finalizar
+
+Não avance ainda para `analyze-screen`.
+
+Primeiro me mostre:
+
+1. a arquitetura implementada;
+2. o contrato do `ProjectContext`;
+3. como o projeto alvo é informado ao agente;
+4. um exemplo da análise gerada;
+5. quais decisões são confirmadas versus inferidas;
+6. os testes criados;
+7. limitações atuais da implementação.
+
+Execute os testes e validações disponíveis no projeto e informe os resultados.
+
 
